@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type</title>
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 h-screen flex items-center justify-center font-sans font-bold text-2xl text-center text-gray-800">
+    <div class="container mx-auto p-6 bg-white rounded-lg shadow-lg max-w-lg w-full space-y-6 text-lg text-gray-700 text-center py-12 px-8 my-8 mx-4 border border-gray-300 rounded-lg">
+        <p id="randomText" class="mb-6"></p>
+        <p id="timer"></p>
+        <input type="text" id="inputText" placeholder="Start typing..." class="font-bold text-2xl text-center text-gray-800 border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring focus:border-blue-300 focus:ring-blue-200 focus:border-blue-500 focus:ring-2 focus:border-2 focus:shadow-lg">
+   </div>
+   <script>
+        function generateRandomWord() {
+            const length = Math.floor(Math.random() * 8) + 3; // Random word length between 3-10
+            let word = "";
+            const letters = "abcdefghijklmnopqrstuvwxyz";
+
+            for (let i = 0; i < length; i++) {
+                word += letters[Math.floor(Math.random() * letters.length)];
+            }
+            return word;
+        }
+
+        function generateText(wordCount) {
+            let text = [];
+            for (let i = 0; i < wordCount; i++) {
+                text.push(generateRandomWord());
+            }
+            return text.join(" ");
+        }
+
+        // Example: Generate text with 60 words
+        document.getElementById('randomText').innerText = generateText(60);
+
+        // Timer function
+        function startTimer(duration, display) {
+            let timer = duration, minutes, seconds;
+            const interval = setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    clearInterval(interval);
+                    display.textContent = "Time's up!";
+                }
+            }, 1000);
+        }
+
+        // Set the timer duration (e.g., 2 minutes)
+        const duration = 60 * 2; // 2 minutes in seconds
+        const display = document.getElementById('timer');
+        startTimer(duration, display);
+
+        const randomTextElement = document.getElementById("randomText");
+    const inputTextElement = document.getElementById("inputText");
+
+    const originalText = randomTextElement.innerText; // Store the original text
+
+    inputTextElement.addEventListener("input", () => {
+        const userInput = inputTextElement.value;
+        let highlightedText = "";
+        let mistakeMade = false;
+
+        for (let i = 0; i < originalText.length; i++) {
+            if (i < userInput.length) {
+                if (!mistakeMade && userInput[i] === originalText[i]) {
+                    highlightedText += `<span style="color: blue;">${originalText[i]}</span>`;
+                } else {
+                    mistakeMade = true;
+                    highlightedText += `<span style="color: red;">${originalText[i]}</span>`;
+                }
+            } else {
+                highlightedText += originalText[i]; // Default text color for untyped characters
+            }
+        }
+
+        randomTextElement.innerHTML = highlightedText; // Update the displayed text
+    });
+    </script>
+</body>
+</html>
